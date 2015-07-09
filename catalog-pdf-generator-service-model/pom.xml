@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>catalog-pdf-generator-service-model</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -17,6 +18,4 @@
             <version>3.4</version>
         </dependency>
     </dependencies>
-
-
 </project>

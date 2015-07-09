@@ -1,18 +1,17 @@
 package no.nb.microservices.pdfgenerator.aspects;
 
-import java.net.URL;
-import java.util.List;
-
 import no.nb.bookgenerator.PageLocation;
 import no.nb.microservices.pdfgenerator.exception.ByggmesterBobException;
 import no.nb.microservices.pdfgenerator.util.UserUtils;
-
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.net.URL;
+import java.util.List;
 
 
 @Aspect

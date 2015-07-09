@@ -42,3 +42,11 @@ spring:
 byggmester-bob:
     tilemapUrlTemplate: http://localhost:8100/tilesv2/tilemap?URN={urn}&format=json
     altoUrlTemplate: http://localhost:8088/postman-pat/file/{urn}/alto/{urn}.xml
+
+---
+spring:
+    profiles: integration
+
+byggmester-bob:
+    tilemapUrlTemplate: http://www.nb.no/services/tilesv2/tilemap?URN={urn}&format=json
+    altoUrlTemplate: http://appserv3.nb.no:8088/postman-pat/file/{urn}/alto/{urn}.xml

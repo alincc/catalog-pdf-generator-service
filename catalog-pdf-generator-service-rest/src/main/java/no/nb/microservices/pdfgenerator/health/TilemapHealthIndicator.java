@@ -2,7 +2,6 @@ package no.nb.microservices.pdfgenerator.health;
 
 import no.nb.microservices.pdfgenerator.config.ByggmesterBobProperties;
 import no.nb.microservices.pdfgenerator.domain.Root;
-
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.web.client.RestTemplate;

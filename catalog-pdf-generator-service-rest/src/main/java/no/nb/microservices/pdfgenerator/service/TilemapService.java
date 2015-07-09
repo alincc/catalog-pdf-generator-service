@@ -1,9 +1,8 @@
 package no.nb.microservices.pdfgenerator.service;
 
+import no.nb.microservices.pdfgenerator.domain.Root;
 import no.nb.microservices.pdfgenerator.repository.ITilemapRepository;
 import no.nb.microservices.pdfgenerator.rest.controller.ByggmesterBobController;
-import no.nb.microservices.pdfgenerator.domain.Root;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

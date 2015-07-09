@@ -1,10 +1,9 @@
 package no.nb.microservices.pdfgenerator.service;
 
-import java.util.List;
+import no.nb.bookgenerator.PageLocation;
 
 import javax.ws.rs.core.StreamingOutput;
-
-import no.nb.bookgenerator.PageLocation;
+import java.util.List;
 
 public interface BuilderService {
 	

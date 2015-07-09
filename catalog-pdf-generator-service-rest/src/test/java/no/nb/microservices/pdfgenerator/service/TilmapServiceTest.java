@@ -1,24 +1,17 @@
 package no.nb.microservices.pdfgenerator.service;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nb.microservices.pdfgenerator.domain.Root;
+import no.nb.microservices.pdfgenerator.repository.ITilemapRepository;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
 
-import no.nb.microservices.pdfgenerator.domain.Root;
-
-import no.nb.microservices.pdfgenerator.repository.ITilemapRepository;
-import no.nb.microservices.pdfgenerator.service.ITilemapService;
-import no.nb.microservices.pdfgenerator.service.TilemapService;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * 

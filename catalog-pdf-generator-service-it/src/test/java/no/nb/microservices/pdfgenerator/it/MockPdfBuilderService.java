@@ -1,17 +1,15 @@
 package no.nb.microservices.pdfgenerator.it;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
-
+import no.nb.bookgenerator.PageLocation;
 import no.nb.microservices.pdfgenerator.service.BuilderService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import no.nb.bookgenerator.PageLocation;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 @Service
 @Profile({"integration"})

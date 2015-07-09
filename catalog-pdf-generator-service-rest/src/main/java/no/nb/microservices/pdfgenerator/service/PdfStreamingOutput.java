@@ -1,14 +1,13 @@
 package no.nb.microservices.pdfgenerator.service;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
-import javax.ws.rs.core.StreamingOutput;
-
 import no.nb.bookgenerator.BookGenerator;
 import no.nb.bookgenerator.PageLocation;
 import no.nb.bookgenerator.pdf.PdfBookGenerator;
+
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  *

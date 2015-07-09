@@ -1,13 +1,11 @@
 package no.nb.microservices.pdfgenerator.service;
 
-import java.util.List;
-
-import javax.ws.rs.core.StreamingOutput;
-
+import no.nb.bookgenerator.PageLocation;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import no.nb.bookgenerator.PageLocation;
+import javax.ws.rs.core.StreamingOutput;
+import java.util.List;
 
 @Service
 @Profile({"prod", "dev"})

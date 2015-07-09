@@ -1,21 +1,20 @@
 package no.nb.microservices.pdfgenerator.service;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import no.nb.bookgenerator.PageLocation;
-import no.nb.microservices.pdfgenerator.model.ByggmesterBobParams;
 import no.nb.microservices.pdfgenerator.config.ByggmesterBobProperties;
-import no.nb.microservices.pdfgenerator.exception.ByggmesterBobException;
 import no.nb.microservices.pdfgenerator.domain.Page;
 import no.nb.microservices.pdfgenerator.domain.Root;
+import no.nb.microservices.pdfgenerator.exception.ByggmesterBobException;
+import no.nb.microservices.pdfgenerator.model.ByggmesterBobParams;
 import no.nb.microservices.pdfgenerator.util.PageUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 

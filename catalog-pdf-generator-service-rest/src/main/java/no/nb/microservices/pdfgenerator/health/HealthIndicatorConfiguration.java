@@ -1,7 +1,6 @@
 package no.nb.microservices.pdfgenerator.health;
 
 import no.nb.microservices.pdfgenerator.config.ByggmesterBobProperties;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.context.annotation.Bean;

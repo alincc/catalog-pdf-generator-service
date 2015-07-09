@@ -2,7 +2,6 @@ package no.nb.microservices.pdfgenerator.config;
 
 import no.nb.nbsecurity.config.SecurityConfig;
 import no.nb.pilt.client.SessionService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

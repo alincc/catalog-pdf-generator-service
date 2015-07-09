@@ -1,9 +1,8 @@
 package no.nb.microservices.pdfgenerator.repository;
 
 import no.nb.microservices.pdfgenerator.config.ByggmesterBobProperties;
-import no.nb.microservices.pdfgenerator.exception.NotFoundException;
 import no.nb.microservices.pdfgenerator.domain.Root;
-
+import no.nb.microservices.pdfgenerator.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

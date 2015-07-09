@@ -1,9 +1,9 @@
 package no.nb.microservices.pdfgenerator.service;
 
-import java.util.List;
-
 import no.nb.bookgenerator.PageLocation;
 import no.nb.microservices.pdfgenerator.model.ByggmesterBobParams;
+
+import java.util.List;
 
 /**
  * 
