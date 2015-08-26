@@ -13,6 +13,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Page {
 	private String urn;
 	private String type;
+    private String pageId;
+    private String pageLabel;
 
 	public String getUrn() {
 		return urn;
@@ -31,7 +33,25 @@ public class Page {
 		this.type = type;
 	}
 
-	public String toString() {
+    @JsonProperty(value="pg_id")
+    public String getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
+    @JsonProperty(value="pg_label")
+    public String getPageLabel() {
+        return pageLabel;
+    }
+
+    public void setPageLabel(String pageLabel) {
+        this.pageLabel = pageLabel;
+    }
+
+    public String toString() {
 	    return new ToStringBuilder(this)
 	      .append("urn", urn)
 	      .append("type", type)

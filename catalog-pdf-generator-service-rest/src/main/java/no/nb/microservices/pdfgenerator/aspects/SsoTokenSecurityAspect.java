@@ -1,6 +1,7 @@
 package no.nb.microservices.pdfgenerator.aspects;
 
 import no.nb.bookgenerator.PageLocation;
+import no.nb.microservices.pdfgenerator.domain.PageLocationWrapper;
 import no.nb.microservices.pdfgenerator.exception.ByggmesterBobException;
 import no.nb.microservices.pdfgenerator.util.UserUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -23,10 +24,10 @@ public class SsoTokenSecurityAspect {
 		    pointcut="no.nb.microservices.pdfgenerator.aspects.SystemArchitecture.findPageLocations()",
 		    returning="retVal")
 	public Object findPageLocations(Object retVal) {
-		List<PageLocation> pageLocations = (List<PageLocation>)retVal;
+		List<PageLocationWrapper> pageLocations = (List<PageLocationWrapper>)retVal;
 		String ssoToken = UserUtils.getSsoToken();
 		String clientIp = UserUtils.getClientIp();
-		
+
 		if (!InetAddressValidator.getInstance().isValidInet4Address(clientIp) || "127.0.0.1".equals(clientIp)) {
 			throw new SecurityException("localhost or IPv6 is not supported");
 		}
@@ -34,10 +35,10 @@ public class SsoTokenSecurityAspect {
 		logger.debug("clientIp = " + clientIp);
 		logger.debug("ssoToken = " + ssoToken);
 		
-		for (PageLocation pageLocation : pageLocations) {
-			URL imageLocation = pageLocation.getImageLocation();
+		for (PageLocationWrapper pageLocation : pageLocations) {
+			URL imageLocation = pageLocation.getPageLocation().getImageLocation();
 			try {
-				pageLocation.setImageLocation(new URL(imageLocation.toString() + "&clientIp="+clientIp+"&ssoToken="+ssoToken));
+				pageLocation.getPageLocation().setImageLocation(new URL(imageLocation.toString() + "&clientIp="+clientIp+"&ssoToken="+ssoToken));
 			} catch (Exception ex) {
 				throw new ByggmesterBobException(ex);
 			}

@@ -3,9 +3,10 @@ package no.nb.microservices.pdfgenerator.service;
 import no.nb.bookgenerator.PageLocation;
 import no.nb.microservices.pdfgenerator.config.ByggmesterBobProperties;
 import no.nb.microservices.pdfgenerator.domain.Page;
+import no.nb.microservices.pdfgenerator.domain.PageLocationWrapper;
 import no.nb.microservices.pdfgenerator.domain.Root;
 import no.nb.microservices.pdfgenerator.exception.ByggmesterBobException;
-import no.nb.microservices.pdfgenerator.model.ByggmesterBobParams;
+import no.nb.microservices.pdfgenerator.model.GeneratorParams;
 import no.nb.microservices.pdfgenerator.util.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * 
@@ -23,82 +26,128 @@ import java.util.List;
  */
 @Service
 public class PageService implements IPageService {
-	private static final Logger logger = LoggerFactory.getLogger(PageService.class);
-	
-	private final ITilemapService tilemapService;
-	private final ByggmesterBobProperties settings;
-	
-	@Autowired
-	public PageService(
-			ITilemapService tilemapService,
-			ByggmesterBobProperties settings) {
-		super();
-		this.tilemapService = tilemapService;
-		this.settings = settings;
-	}
+    private static final Logger logger = LoggerFactory.getLogger(PageService.class);
 
-	@Override
-	public List<PageLocation> findPageLocations(ByggmesterBobParams params) {
-		List<PageLocation> pageLocations = new ArrayList<>();
-		List<String> urns = params.getUrns();
-		List<String> pages = params.getPages();
-		List<String> resolutionlevels = params.getResolutionlevel();
+    private final ITilemapService tilemapService;
+    private final ByggmesterBobProperties settings;
 
-		for (int i = 0; i < urns.size(); i++) {
-			String page = (pages == null) ? null : pages.get(i);
-			String urn = urns.get(i);
-			Root tilemap = tilemapService.findByUrn(urn);
-			List<Integer> pageList = PageUtils.toPageList(page);
+    @Autowired
+    public PageService(
+            ITilemapService tilemapService,
+            ByggmesterBobProperties settings) {
+        super();
+        this.tilemapService = tilemapService;
+        this.settings = settings;
+    }
 
-			if (params.getType().equalsIgnoreCase("book")) {
-				if (!pageList.isEmpty()) {
-					// Selected pages
-					for (int pageIndex : pageList) {
-						Page pageElement = tilemap.getPages().getPages().get(pageIndex-1);
-						if (pageElement != null) {
-							pageLocations.add(createPageLocation(pageElement, resolutionlevels.get(i), params));
-						}
-					}
-				} else {
-					// All pages
-					for(Page pageElement : tilemap.getPages().getPages()) {
-						pageLocations.add(createPageLocation(pageElement, resolutionlevels.get(i), params));
-					}
-				}
-			} else if (params.getType().equalsIgnoreCase("cover")) {
-				List<Page> covers = tilemap.getPages().findPageByType("COVER.*");
-				if (covers.size() > 0) {
-					for (Page cover : covers) {
-						pageLocations.add(createPageLocation(cover, resolutionlevels.get(i), params));
-					}
-				}
-			} else if (params.getType().equalsIgnoreCase("pages")) {
-				List<Page> covers = tilemap.getPages().findPageByType(".*PAGE.*");
-				if (covers.size() > 0) {
-					for (Page cover : covers) {
-						pageLocations.add(createPageLocation(cover, resolutionlevels.get(i), params));
-					}
-				}
-			}
-			
-		}
+    @Override
+    public List<PageLocationWrapper> findPageLocations(GeneratorParams params) {
+        List<PageLocationWrapper> pageLocations = new ArrayList<>();
+        List<String> urns = params.getUrns();
+        List<String> pages = params.getPages();
+        List<String> resolutionlevels = params.getResolutionlevel();
 
-		return pageLocations;
-	}
+        for (int i = 0; i < urns.size(); i++) {
+            String page = (pages == null) ? null : pages.get(i);
+            String urn = urns.get(i);
+            Root tilemap = tilemapService.findByUrn(urn);
+            List<Integer> pageList = PageUtils.toPageList(page);
 
-	private PageLocation createPageLocation(Page page, String resolutionlevel, ByggmesterBobParams params) {
-		String pageUrl = settings.getPageUrlTemplate().replace("{urn}", page.getUrn()).replace("{svc.level}", resolutionlevel);
-		String altoUrl = settings.getAltoUrlTemplate().replace("{urn}", page.getUrn().replace("URN:NBN:no-nb_", ""));
-		logger.debug("pageUrl=" + pageUrl);
-		logger.debug("altoUrl=" + altoUrl);
-		try {
-			PageLocation pageLocation = new PageLocation(new URL(pageUrl));
-			if (params.isText()) {
-				pageLocation.setTextLocation(new URL(altoUrl));
-			}
-			return pageLocation;
-		} catch(Exception ex) {
-			throw new ByggmesterBobException(ex);
-		}
-	}
+            if (!pageList.isEmpty()) {
+                if ("label".equalsIgnoreCase(params.getPageSelection())) {
+                    for (Page pageElement : tilemap.getPages().getPages()) {
+                        if (pageList.contains(pageElement.getPageLabel())) {
+                            PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params));
+                            pageLocations.add(pageLocationWrapper);
+                        }
+                    }
+                } else if ("id".equalsIgnoreCase(params.getPageSelection())) {
+                    for (int requestPage : pageList) {
+                        Page pageElement = tilemap.getPages().getPages().get(requestPage-1);
+                        PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params));
+                        pageLocations.add(pageLocationWrapper);
+                    }
+                }
+            } else {
+                // All pages
+                for (Page pageElement : tilemap.getPages().getPages()) {
+                    PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params));
+                    pageLocations.add(pageLocationWrapper);
+                }
+            }
+        }
+
+        return pageLocations;
+    }
+
+    private PageLocation createPageLocation(Page page, String resolutionlevel, GeneratorParams params) {
+        String format = "image/jpeg";
+        switch (params.getFileType()) {
+            case "jpg":
+                format = "image/jpeg";
+                break;
+            case "jp2":
+                format = "image/jp2";
+                break;
+            case "tif":
+                format = "image/tiff";
+                break;
+        }
+        String pageUrl = settings.getPageUrlTemplate().replace("{urn}", page.getUrn()).replace("{svc.level}", resolutionlevel).replace("{format}", format);
+        String altoUrl = settings.getAltoUrlTemplate().replace("{urn}", page.getUrn().replace("URN:NBN:no-nb_", ""));
+        logger.debug("pageUrl=" + pageUrl);
+        logger.debug("altoUrl=" + altoUrl);
+        try {
+            PageLocation pageLocation = new PageLocation(new URL(pageUrl));
+            if (params.isText()) {
+                pageLocation.setTextLocation(new URL(altoUrl));
+            }
+            return pageLocation;
+        } catch (Exception ex) {
+            throw new ByggmesterBobException(ex);
+        }
+    }
+
+    private List<Integer> pagesToList(String s, Integer max) {
+        Pattern mulptrn = Pattern.compile("^(\\d+\\s*(,|-)\\s*)*\\d+$");
+        List<Integer> ret = new ArrayList<Integer>();
+
+        try {
+            if (!mulptrn.matcher(s.trim()).matches()) {
+                return null;
+            }
+            String[] ints = s.replaceAll("\\s", "").split(",");
+            for (String i : ints) {
+                if (i.contains("-")) {
+                    String[] span = i.split("-");
+                    if (Integer.parseInt(span[0]) > Integer
+                            .parseInt(span[span.length - 1])) {
+                        String tmp = span[0];
+                        span[0] = span[span.length - 1];
+                        span[span.length - 1] = tmp;
+                    }
+
+                    if (Integer.parseInt(span[0]) <= 0) {
+                        span[0] = "1";
+                    }
+
+                    for (int j = Integer.parseInt(span[0]); j <= Integer
+                            .parseInt(span[span.length - 1]); j++) {
+                        ret.add(j);
+                    }
+                } else if (Integer.parseInt(i) > 0) {
+                    ret.add(Integer.parseInt(i));
+                }
+            }
+
+            HashSet h = new HashSet(ret);
+            ret.clear();
+            ret.addAll(h);
+            //return ret.toString().replaceAll("[^,\\d]", "");
+            return ret;
+        } catch (Exception ex) {
+            return null;
+
+        }
+    }
 }

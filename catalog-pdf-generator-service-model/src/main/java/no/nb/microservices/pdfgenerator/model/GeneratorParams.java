@@ -6,17 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ByggmesterBobParams {
+public class GeneratorParams {
 	private List<String> urns;
 	private List<String> pages;
-	private String type;
-	private boolean text;
-	private List<String> resolutionlevel;
-	
-	public ByggmesterBobParams(List<String> urns,
-                               String[] pages,
-                               String type,
-                               boolean text, List<String> resolutionlevel)
+    private String pageSelection;
+    private boolean text;
+    private List<String> resolutionlevel;
+    private String fileType;
+
+	public GeneratorParams(List<String> urns, String[] pages, String pageSelection, boolean text, List<String> resolutionlevel, String filetype)
     {
 		super();
 		this.urns = urns;
@@ -26,8 +24,8 @@ public class ByggmesterBobParams {
             }
             this.pages = Arrays.asList(pages);
 		}
-		this.type = type;
-		this.text = text;
+        this.pageSelection = pageSelection;
+        this.text = text;
 
         // Set resolution level to 4 if missing
         if (resolutionlevel == null) {
@@ -40,6 +38,7 @@ public class ByggmesterBobParams {
         }
 
 		this.resolutionlevel = resolutionlevel;
+        this.fileType = filetype;
 	}
 
 	public List<String> getUrns() {
@@ -56,14 +55,6 @@ public class ByggmesterBobParams {
 	
 	public void setPages(List<String> pages) {
 		this.pages = pages;
-	}
-	
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public boolean isText() {
@@ -86,9 +77,24 @@ public class ByggmesterBobParams {
 	    return new ToStringBuilder(this)
 	      .append("urns", urns)
 	      .append("pages", pages)
-	      .append("type", type)
 	      .append("text", text)
 	      .append("resolutionlevel", resolutionlevel)
 	      .toString();
 	}
+
+    public String getPageSelection() {
+        return pageSelection;
+    }
+
+    public void setPageSelection(String pageSelection) {
+        this.pageSelection = pageSelection;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
 }
