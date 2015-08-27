@@ -60,7 +60,7 @@ public class GenerateController {
         }
         else { // Images
             response.setHeader("Content-Disposition", "attachment; filename=" + filename + ".zip");
-            response.setContentType("application/zip, application/octet-stream");
+            response.setContentType("application/zip");
             builderService.buildImages(pageLocations,filetype).writeTo(response.getOutputStream());
         }
     }
