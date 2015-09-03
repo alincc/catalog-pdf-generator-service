@@ -50,9 +50,9 @@ public class PageService implements IPageService {
         List<Boolean> addTexts = params.getAddText();
 
         for (int i = 0; i < urns.size(); i++) {
-            String page = (pages == null || pages.isEmpty()) ? null : pages.get(i);
-            String pageSelection = (pageSelections == null || pageSelections.isEmpty()) ? "id" : pageSelections.get(i);
-            Boolean addText = (addTexts == null || addTexts.isEmpty()) ? false : addTexts.get(i);
+            String page = (pages == null || pages.isEmpty() || pages.size() < i+1) ? null : pages.get(i);
+            String pageSelection = (pageSelections == null || pageSelections.isEmpty() || pageSelections.size() < i+1) ? "id" : pageSelections.get(i);
+            Boolean addText = (addTexts == null || addTexts.isEmpty() || addTexts.size() < i+1) ? false : addTexts.get(i);
             String urn = urns.get(i);
             Root tilemap = tilemapService.findByUrn(urn);
             List<Integer> pageList = PageUtils.toPageList(page);

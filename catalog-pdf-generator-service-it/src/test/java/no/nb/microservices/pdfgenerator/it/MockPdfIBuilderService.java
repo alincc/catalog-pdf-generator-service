@@ -1,6 +1,7 @@
 package no.nb.microservices.pdfgenerator.it;
 
 import no.nb.bookgenerator.PageLocation;
+import no.nb.microservices.pdfgenerator.domain.OutputFile;
 import no.nb.microservices.pdfgenerator.domain.PageLocationWrapper;
 import no.nb.microservices.pdfgenerator.service.IBuilderService;
 import org.springframework.context.annotation.Profile;
@@ -43,7 +44,7 @@ public class MockPdfIBuilderService implements IBuilderService {
 	}
 
     @Override
-    public ByteArrayOutputStream buildImages(List<PageLocationWrapper> pageLocations, String filetype) throws IOException {
+    public OutputFile buildImages(List<PageLocationWrapper> pageLocations, String filetype) throws IOException {
         return null;
     }
 }
