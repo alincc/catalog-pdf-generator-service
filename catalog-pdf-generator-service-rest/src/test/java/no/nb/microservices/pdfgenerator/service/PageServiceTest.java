@@ -44,7 +44,9 @@ public class PageServiceTest {
 	@Test
 	public void findPageLocations() throws Exception {
 		List<String> urns = Arrays.asList("URN:NBN:no-nb_digibok_2013021509063");
-		String[] pages = new String[]{"1,3,10-12"};
+        String[] pages = new String[]{"1,3,10-12"};
+        List<String> pageSelections = Arrays.asList("id");
+		List<Boolean> addTexts = Arrays.asList(true);
 		List<PageLocationWrapper> expecteds = Arrays.asList(
 				new PageLocationWrapper("URN:NBN:no-nb_digibok_2013021509063_C1", "", new PageLocation(new URL("http://www.nb.no/services/image/resolver?url_ver=Z39.88-2004&rft_id=URN:NBN:no-nb_digibok_2013021509063_C1&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format=image/jpeg&svc.level=1&svc.rotate=0"), new URL("http://appserv3.nb.no:8088/postman-pat/file/digibok_2013021509063_C1/alto/digibok_2013021509063_C1.xml"))),
 				new PageLocationWrapper("URN:NBN:no-nb_digibok_2013021509063_0001", "", new PageLocation(new URL("http://www.nb.no/services/image/resolver?url_ver=Z39.88-2004&rft_id=URN:NBN:no-nb_digibok_2013021509063_0001&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format=image/jpeg&svc.level=1&svc.rotate=0"), new URL("http://appserv3.nb.no:8088/postman-pat/file/digibok_2013021509063_0001/alto/digibok_2013021509063_0001.xml"))),
@@ -63,7 +65,7 @@ public class PageServiceTest {
         List<String> resolutionlevel = new ArrayList<>();
         resolutionlevel.add("1");
 
-		GeneratorParams params = new GeneratorParams(urns, pages, "id", true, resolutionlevel, "pdf");
+		GeneratorParams params = new GeneratorParams(urns, pages, pageSelections, addTexts, resolutionlevel, "pdf");
 		List<PageLocationWrapper> actuals = pageService.findPageLocations(params);
 
 		verify(tilemapService);
@@ -79,7 +81,9 @@ public class PageServiceTest {
     public void findPageLocationsMultipleResolutionlevels() throws Exception {
         List<String> urns = Arrays.asList("URN:NBN:no-nb_digibok_2013021509063", "URN:NBN:no-nb_digibok_2013021509063");
         List<String> resolutionlevel = Arrays.asList("1", "4");
-        String[] pages = new String[]{"1,3,10-12", "1"};
+        List<String> pageSelections = Arrays.asList("id");
+        List<Boolean> addTexts = Arrays.asList(true);
+        String[] pages = new String[]{"1,3,10-12"};
         List<PageLocationWrapper> expecteds = Arrays.asList(
                 new PageLocationWrapper("URN:NBN:no-nb_digibok_2013021509063_C1", "", new PageLocation(new URL("http://www.nb.no/services/image/resolver?url_ver=Z39.88-2004&rft_id=URN:NBN:no-nb_digibok_2013021509063_C1&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format=image/jpeg&svc.level=1&svc.rotate=0"), new URL("http://appserv3.nb.no:8088/postman-pat/file/digibok_2013021509063_C1/alto/digibok_2013021509063_C1.xml"))),
                 new PageLocationWrapper("URN:NBN:no-nb_digibok_2013021509063_0001", "", new PageLocation(new URL("http://www.nb.no/services/image/resolver?url_ver=Z39.88-2004&rft_id=URN:NBN:no-nb_digibok_2013021509063_0001&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format=image/jpeg&svc.level=1&svc.rotate=0"), new URL("http://appserv3.nb.no:8088/postman-pat/file/digibok_2013021509063_0001/alto/digibok_2013021509063_0001.xml"))),
@@ -97,7 +101,7 @@ public class PageServiceTest {
         expect(tilemapService.findByUrn(urns.get(1))).andReturn(tilemap);
         replay(tilemapService);
 
-        GeneratorParams params = new GeneratorParams(urns, pages, "id", true, resolutionlevel, "pdf");
+        GeneratorParams params = new GeneratorParams(urns, pages, pageSelections, addTexts, resolutionlevel, "pdf");
         List<PageLocationWrapper> actuals = pageService.findPageLocations(params);
 
         verify(tilemapService);

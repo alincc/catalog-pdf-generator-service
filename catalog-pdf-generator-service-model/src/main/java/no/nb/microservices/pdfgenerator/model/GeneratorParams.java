@@ -5,16 +5,17 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GeneratorParams {
 	private List<String> urns;
 	private List<String> pages;
-    private String pageSelection;
-    private boolean text;
+    private List<String> pageSelections;
+    private List<Boolean> addText;
     private List<String> resolutionlevel;
     private String fileType;
 
-	public GeneratorParams(List<String> urns, String[] pages, String pageSelection, boolean text, List<String> resolutionlevel, String filetype)
+	public GeneratorParams(List<String> urns, String[] pages, List<String> pageSelections, List<Boolean> addText, List<String> resolutionlevel, String filetype)
     {
 		super();
 		this.urns = urns;
@@ -24,8 +25,8 @@ public class GeneratorParams {
             }
             this.pages = Arrays.asList(pages);
 		}
-        this.pageSelection = pageSelection;
-        this.text = text;
+        this.pageSelections = pageSelections;
+        this.addText = addText;
 
         // Set resolution level to 4 if missing
         if (resolutionlevel == null) {
@@ -57,14 +58,14 @@ public class GeneratorParams {
 		this.pages = pages;
 	}
 
-	public boolean isText() {
-		return text;
+	public List<Boolean> getAddText() {
+		return addText;
 	}
-	
-	public void setText(boolean text) {
-		this.text = text;
+
+	public void setAddText(List<Boolean> addText) {
+		this.addText = addText;
 	}
-	
+
 	public List<String> getResolutionlevel() {
 		return resolutionlevel;
 	}
@@ -77,17 +78,18 @@ public class GeneratorParams {
 	    return new ToStringBuilder(this)
 	      .append("urns", urns)
 	      .append("pages", pages)
-	      .append("text", text)
+	      .append("text", addText)
 	      .append("resolutionlevel", resolutionlevel)
 	      .toString();
 	}
 
-    public String getPageSelection() {
-        return pageSelection;
+
+    public List<String> getPageSelections() {
+        return pageSelections;
     }
 
-    public void setPageSelection(String pageSelection) {
-        this.pageSelection = pageSelection;
+    public void setPageSelections(List<String> pageSelections) {
+        this.pageSelections = pageSelections;
     }
 
     public String getFileType() {

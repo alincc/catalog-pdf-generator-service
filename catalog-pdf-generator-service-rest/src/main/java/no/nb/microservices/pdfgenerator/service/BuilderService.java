@@ -1,6 +1,7 @@
 package no.nb.microservices.pdfgenerator.service;
 
 import no.nb.bookgenerator.PageLocation;
+import no.nb.microservices.pdfgenerator.domain.OutputFile;
 import no.nb.microservices.pdfgenerator.domain.PageLocationWrapper;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Profile;
@@ -27,24 +28,32 @@ public class BuilderService implements IBuilderService {
 	}
 
     @Override
-    public ByteArrayOutputStream buildImages(List<PageLocationWrapper> pageLocations, String filetype) throws IOException {
+    public OutputFile buildImages(List<PageLocationWrapper> pageLocations, String filetype) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos);
+        OutputFile outputFile = null;
 
-        for (PageLocationWrapper pageLocation : pageLocations) {
-            InputStream pageStream = pageLocation.getPageLocation().getImageLocation().openStream();
+        if (pageLocations.size() > 1) { // ZIP if more than 1 image
+            ZipOutputStream zos = new ZipOutputStream(baos);
 
-            ZipEntry ze = new ZipEntry(pageLocation.getUrn() + "." + filetype);
-            zos.putNextEntry(ze);
-            zos.write(IOUtils.toByteArray(pageStream));
-            zos.closeEntry();
+            for (PageLocationWrapper pageLocation : pageLocations) {
+                InputStream pageStream = pageLocation.getPageLocation().getImageLocation().openStream();
+
+                ZipEntry ze = new ZipEntry(pageLocation.getUrn() + "." + filetype);
+                zos.putNextEntry(ze);
+                zos.write(IOUtils.toByteArray(pageStream));
+                zos.closeEntry();
+            }
+            zos.close();
+
+            outputFile = new OutputFile("zip", baos);
+        }
+        else {
+            InputStream pageStream = pageLocations.get(0).getPageLocation().getImageLocation().openStream();
+            IOUtils.copy(pageStream, baos);
+            outputFile = new OutputFile(filetype, baos);
         }
 
-        zos.close();
-        OutputStream os = new ByteArrayOutputStream();;
-        baos.writeTo(os);
-
-        return baos;
+        return outputFile;
     }
 
 }

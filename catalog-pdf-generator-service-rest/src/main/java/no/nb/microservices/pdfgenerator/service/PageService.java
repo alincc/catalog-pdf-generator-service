@@ -45,33 +45,37 @@ public class PageService implements IPageService {
         List<PageLocationWrapper> pageLocations = new ArrayList<>();
         List<String> urns = params.getUrns();
         List<String> pages = params.getPages();
+        List<String> pageSelections = params.getPageSelections();
         List<String> resolutionlevels = params.getResolutionlevel();
+        List<Boolean> addTexts = params.getAddText();
 
         for (int i = 0; i < urns.size(); i++) {
-            String page = (pages == null) ? null : pages.get(i);
+            String page = (pages == null || pages.isEmpty()) ? null : pages.get(i);
+            String pageSelection = (pageSelections == null || pageSelections.isEmpty()) ? "id" : pageSelections.get(i);
+            Boolean addText = (addTexts == null || addTexts.isEmpty()) ? false : addTexts.get(i);
             String urn = urns.get(i);
             Root tilemap = tilemapService.findByUrn(urn);
             List<Integer> pageList = PageUtils.toPageList(page);
 
             if (!pageList.isEmpty()) {
-                if ("label".equalsIgnoreCase(params.getPageSelection())) {
+                if ("label".equalsIgnoreCase(pageSelection)) {
                     for (Page pageElement : tilemap.getPages().getPages()) {
                         if (pageList.contains(pageElement.getPageLabel())) {
-                            PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params));
+                            PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params, addText));
                             pageLocations.add(pageLocationWrapper);
                         }
                     }
-                } else if ("id".equalsIgnoreCase(params.getPageSelection())) {
+                } else if ("id".equalsIgnoreCase(pageSelection)) {
                     for (int requestPage : pageList) {
                         Page pageElement = tilemap.getPages().getPages().get(requestPage-1);
-                        PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params));
+                        PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params, addText));
                         pageLocations.add(pageLocationWrapper);
                     }
                 }
             } else {
                 // All pages
                 for (Page pageElement : tilemap.getPages().getPages()) {
-                    PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params));
+                    PageLocationWrapper pageLocationWrapper = new PageLocationWrapper(pageElement.getUrn(), pageElement.getType(), createPageLocation(pageElement, resolutionlevels.get(i), params, addText));
                     pageLocations.add(pageLocationWrapper);
                 }
             }
@@ -80,7 +84,7 @@ public class PageService implements IPageService {
         return pageLocations;
     }
 
-    private PageLocation createPageLocation(Page page, String resolutionlevel, GeneratorParams params) {
+    private PageLocation createPageLocation(Page page, String resolutionlevel, GeneratorParams params, Boolean addText) {
         String format = "image/jpeg";
         switch (params.getFileType()) {
             case "jpg":
@@ -99,7 +103,7 @@ public class PageService implements IPageService {
         logger.debug("altoUrl=" + altoUrl);
         try {
             PageLocation pageLocation = new PageLocation(new URL(pageUrl));
-            if (params.isText()) {
+            if (addText) {
                 pageLocation.setTextLocation(new URL(altoUrl));
             }
             return pageLocation;
@@ -112,7 +116,6 @@ public class PageService implements IPageService {
         Pattern mulptrn = Pattern.compile("^(\\d+\\s*(,|-)\\s*)*\\d+$");
         List<Integer> ret = new ArrayList<Integer>();
 
-        try {
             if (!mulptrn.matcher(s.trim()).matches()) {
                 return null;
             }
@@ -145,9 +148,5 @@ public class PageService implements IPageService {
             ret.addAll(h);
             //return ret.toString().replaceAll("[^,\\d]", "");
             return ret;
-        } catch (Exception ex) {
-            return null;
-
-        }
     }
 }

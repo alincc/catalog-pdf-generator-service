@@ -1,5 +1,6 @@
 package no.nb.microservices.pdfgenerator.rest.controller;
 
+import no.nb.microservices.pdfgenerator.domain.OutputFile;
 import no.nb.microservices.pdfgenerator.domain.PageLocationWrapper;
 import no.nb.microservices.pdfgenerator.model.GeneratorParams;
 import no.nb.microservices.pdfgenerator.service.IBuilderService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -40,15 +42,15 @@ public class GenerateController {
 	public void generate(
 			@RequestParam("urn") List<String> urns,
 			@RequestParam(value = "pages", required=false) String[] pages,
-            @RequestParam(value = "pageSelection", required = false, defaultValue = "id") String pageSelection,
-			@RequestParam(value = "text", required = false, defaultValue = "true") boolean text,
-			@RequestParam(value = "resolutionlevel", required = false) List<String> resolutionlevel,
+            @RequestParam(value = "pageSelections", required = false) List<String> pageSelections,
+			@RequestParam(value = "addText", required = false) List<Boolean> addText,
+			@RequestParam(value = "resolutionlevel", required = false) List<String> resolutionlevels,
 			@RequestParam(value = "filename", required = false, defaultValue = "Nasjonalbiblioteket") String filename,
 			@RequestParam(value = "filetype", required = false, defaultValue = "pdf") String filetype,
             HttpServletResponse response) throws IOException {
 
         // Make parameter object
-		GeneratorParams params = new GeneratorParams(urns, pages, pageSelection, text, resolutionlevel, filetype);
+		GeneratorParams params = new GeneratorParams(urns, pages, pageSelections, addText, resolutionlevels, filetype);
 
         // Find URL for all images that will be used to build a pdf or zip
 		List<PageLocationWrapper> pageLocations = pageService.findPageLocations(params);
@@ -59,10 +61,13 @@ public class GenerateController {
             builderService.buildPdf(pageLocations).write(response.getOutputStream());
         }
         else { // Images
-            response.setHeader("Content-Disposition", "attachment; filename=" + filename + ".zip");
-            response.setContentType("application/zip");
-            builderService.buildImages(pageLocations,filetype).writeTo(response.getOutputStream());
-        }
+			OutputFile outputFile = builderService.buildImages(pageLocations, filetype);
+			String outputFilename = filename + "." + outputFile.getFiletype();
+			response.setHeader("Content-Disposition", "attachment; filename=" + outputFilename);
+			String contentType = Files.probeContentType(new File(outputFilename).toPath());
+			response.setContentType(contentType);
+			outputFile.getByteArrayOutputStream().writeTo(response.getOutputStream());
+		}
     }
 
 }
