@@ -15,7 +15,7 @@ endpoints:
     enabled: true
 
 server:
-  port: 8070
+  port: 8080
     
 byggmester-bob:
     pageUrlTemplate: http://www.nb.no/services/image/resolver?url_ver=Z39.88-2004&rft_id={urn}&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format={format}&svc.level={svc.level}&svc.rotate=0&action=pdf
