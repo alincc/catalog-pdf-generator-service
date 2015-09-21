@@ -43,3 +43,17 @@ spring:
 byggmester-bob:
     tilemapUrlTemplate: http://www.nb.no/services/tilesv2/tilemap?URN={urn}&format=json
     altoUrlTemplate: http://appserv3.nb.no:8088/postman-pat/file/{urn}/alto/{urn}.xml
+
+---
+spring:
+    profiles: docker
+
+server:
+    port: 8080
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
