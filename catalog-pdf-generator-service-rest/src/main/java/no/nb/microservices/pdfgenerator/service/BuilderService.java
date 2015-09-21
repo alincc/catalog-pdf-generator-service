@@ -18,7 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
-@Profile({"prod", "dev"})
+@Profile({"prod", "dev", "docker"})
 public class BuilderService implements IBuilderService {
 
 	@Override
