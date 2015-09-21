@@ -16,7 +16,14 @@ endpoints:
 
 server:
   port: 8080
-    
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
 byggmester-bob:
     pageUrlTemplate: http://www.nb.no/services/image/resolver?url_ver=Z39.88-2004&rft_id={urn}&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format={format}&svc.level={svc.level}&svc.rotate=0&action=pdf
 
@@ -57,3 +64,7 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://discovery:8761/eureka/
+
+byggmester-bob:
+    tilemapUrlTemplate: http://www.nb.no/services/tilesv2/tilemap?URN={urn}&format=json
+    altoUrlTemplate: http://appserv3.nb.no:8088/postman-pat/file/{urn}/alto/{urn}.xml
