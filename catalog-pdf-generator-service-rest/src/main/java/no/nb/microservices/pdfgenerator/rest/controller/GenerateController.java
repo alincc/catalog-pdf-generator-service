@@ -38,7 +38,7 @@ public class GenerateController {
 		this.builderService = builderService;
 	}
 
-	@RequestMapping(value = "/v1/generate", method = RequestMethod.GET)
+	@RequestMapping(value = "/catalog/v1/generate", method = RequestMethod.GET)
 	public void generate(
 			@RequestParam("urn") List<String> urns,
 			@RequestParam(value = "pages", required=false) String[] pages,
