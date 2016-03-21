@@ -2,9 +2,22 @@ info:
     app:
         name: catalog-pdf-generator-service
         description: Generates PDF files from items in the catalog
+    build:
+        artifact: ${project.artifactId}
+        name: ${project.name}
+        description: ${project.description}
+        version: ${project.version}
 
 server:
-  port: 8020
+    port: 8020
+
+zipkin:
+    collector-hostname: localhost
+    
+monitoring:
+    hostname: localhost
+    port: 2003
+    period: 1    
 
 byggmester-bob:
     pageUrlTemplate: http://www.nb.no/services/image/resolver?url_ver=Z39.88-2004&rft_id={urn}&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format={format}&svc.level={svc.level}&svc.rotate=0&action=pdf
